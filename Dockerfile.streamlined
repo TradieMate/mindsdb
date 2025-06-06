@@ -55,4 +55,14 @@ ENV MINDSDB_APIS=http
 ENV MINDSDB_DOCKER_ENV=True
 ENV MINDSDB_ENABLED_HANDLERS=airtable,supabase,gmail,google_analytics,lightwood,huggingface,huggingface_api,langchain,langchain_embedding,pgvector,postgres,sheets,s3,minds_endpoint,rag
 
+# Credential environment variables (to be set at runtime)
+ENV MINDS_API_KEY=""
+ENV AIRTABLE_API_KEY=""
+ENV HUGGING_FACE_API_KEY=""
+ENV OPENAI_API_KEY=""
+ENV SUPABASE_POSTGRES_URL=""
+ENV GOOGLE_CLIENT_ID=""
+ENV GOOGLE_CLIENT_SECRET=""
+ENV S3_BUCKET_URL=""
+
 CMD ["python", "-m", "mindsdb", "--config", "/home/mindsdb/config.json", "--api", "http"]
