@@ -1,11 +1,16 @@
 version: '3.8'
 
+# Load environment variables from .env.docker file
+# Copy .env.docker.example to .env.docker and configure your credentials
+
 services:
   mindsdb-streamlined:
     build:
       context: .
       dockerfile: Dockerfile.streamlined
     container_name: mindsdb-streamlined
+    env_file:
+      - .env.docker  # Load credentials from .env.docker file
     ports:
       - "47334:47334"  # HTTP API
     environment:
@@ -15,6 +20,15 @@ services:
       - MINDSDB_DOCKER_ENV=True
       - MINDSDB_ENABLED_HANDLERS=airtable,supabase,gmail,google_analytics,lightwood,huggingface,huggingface_api,langchain,langchain_embedding,pgvector,postgres,sheets,s3,minds_endpoint,rag
       - MINDSDB_LOG_LEVEL=INFO
+      # Credential environment variables (set these in your .env file)
+      - MINDS_API_KEY=${MINDS_API_KEY:-}
+      - AIRTABLE_API_KEY=${AIRTABLE_API_KEY:-}
+      - HUGGING_FACE_API_KEY=${HUGGING_FACE_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - SUPABASE_POSTGRES_URL=${SUPABASE_POSTGRES_URL:-}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - S3_BUCKET_URL=${S3_BUCKET_URL:-}
     volumes:
       - mindsdb_data:/home/mindsdb/data
       - ./config-streamlined.json:/home/mindsdb/config.json:ro
