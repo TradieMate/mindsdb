@@ -23,25 +23,40 @@ SUPABASE_PORT=5432
 SUPABASE_DATABASE=postgres
 ```
 
-#### **🔧 Required - MindsDB Core**
+#### **🔧 Required - MindsDB Core (ACTUAL Variables)**
 ```bash
-# Database backend (Render provides PostgreSQL automatically)
+# Database backend for MindsDB metadata (NOT your data)
 MINDSDB_DB_CON=postgresql://user:password@host:port/database
 
-# Storage directory (Render persistent disk)
+# Storage directory for MindsDB files
 MINDSDB_STORAGE_DIR=/opt/render/project/src/var
+
+# Default LLM API key (for AI models)
+MINDSDB_DEFAULT_LLM_API_KEY=sk-your_openai_key
+
+# Optional: Authentication (if you want login protection)
+MINDSDB_USERNAME=admin
+MINDSDB_PASSWORD=your_secure_password
 ```
 
-#### **🤖 Required - AI/ML APIs**
+### **⚠️ IMPORTANT CLARIFICATION**
+
+**For Self-Hosted MindsDB (what we're deploying):**
+- ✅ Uses: `MINDSDB_DB_CON`, `MINDSDB_STORAGE_DIR`, `MINDSDB_DEFAULT_LLM_API_KEY`
+- ❌ Does NOT use: `MINDSDB_API_KEY`, `MINDSDB_URL` (those are for MindsDB Cloud)
+
+**For MindsDB Cloud (hosted service):**
+- ✅ Uses: `MINDSDB_API_KEY`, `MINDSDB_URL` 
+- ❌ Does NOT use the self-hosted variables
+
+#### **🤖 Optional - Additional APIs**
 ```bash
-# OpenAI (required for many ML features)
-OPENAI_API_KEY=sk-your_openai_api_key
+# Google (for Google Ads integration)
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 
-# Default LLM API key (often same as OpenAI)
-MINDSDB_DEFAULT_LLM_API_KEY=sk-your_openai_api_key
-
-# Default embedding model API key
-MINDSDB_DEFAULT_EMBEDDING_MODEL_API_KEY=sk-your_openai_api_key
+# Other AI providers (optional)
+ANTHROPIC_API_KEY=your_anthropic_key
+HUGGINGFACE_API_KEY=your_huggingface_key
 ```
 
 #### **📊 Optional - Monitoring & Analytics**
