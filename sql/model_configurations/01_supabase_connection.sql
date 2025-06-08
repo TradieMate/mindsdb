@@ -1,9 +1,9 @@
 -- Supabase Analytics Database Connection
--- This creates the connection to your Supabase database
+-- This creates the connection to your Supabase database (PostgreSQL)
 -- Replace the parameters with your actual Supabase credentials
 
 CREATE DATABASE supabase_analytics
-WITH ENGINE = "supabase",
+WITH ENGINE = "postgres",
 PARAMETERS = { 
   "user": "${SUPABASE_USER}",
   "password": "${SUPABASE_PASSWORD}",
