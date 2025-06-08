@@ -8,6 +8,6 @@ PARAMETERS = {
   "user": "${SUPABASE_USER}",
   "password": "${SUPABASE_PASSWORD}",
   "host": "${SUPABASE_HOST}",
-  "port": "5432",
-  "database": "postgres"
+  "port": "${SUPABASE_PORT}",
+  "database": "${SUPABASE_DATABASE}"
 };

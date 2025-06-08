@@ -84,3 +84,9 @@ Set these environment variables for Supabase connection:
 - `SUPABASE_USER`: Your Supabase database user
 - `SUPABASE_PASSWORD`: Your Supabase database password  
 - `SUPABASE_HOST`: Your Supabase project host (e.g., xyz.supabase.co)
+- `SUPABASE_PORT`: Your Supabase port (usually 5432)
+- `SUPABASE_DATABASE`: Your Supabase database name (usually postgres)
+
+Additional required variables:
+- `OPENAI_API_KEY`: Required for AI/ML features
+- `MINDSDB_DEFAULT_LLM_API_KEY`: Default LLM API key (often same as OpenAI)
