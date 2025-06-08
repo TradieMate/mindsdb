@@ -1,8 +1,8 @@
-# MindsDB Render Deployment Guide
+# MindsDB with MindsChat Deployment Guide
 
-## 🚀 **Direct GitHub Deployment on Render**
+## 🤖 **MindsChat Chatbot Interface**
 
-Yes, you can deploy directly from GitHub! Here's the complete configuration:
+MindsChat is MindsDB's chatbot interface that connects to chat platforms (Slack, Teams, etc.) and provides conversational AI capabilities.
 
 ### **1. Render Service Configuration**
 
@@ -10,7 +10,7 @@ Yes, you can deploy directly from GitHub! Here's the complete configuration:
 **Repository**: `https://github.com/TradieMate/mindsdb`  
 **Branch**: `cleanup/remove-unused-components-and-folders`  
 **Build Command**: `pip install -e .`  
-**Start Command**: `python -m mindsdb --api=http,mysql,postgres --host=0.0.0.0 --port=$PORT`
+**Start Command**: `python -m mindsdb --api=http --host=0.0.0.0 --port=$PORT --no_studio`
 
 ### **2. Complete Environment Variables**
 
@@ -28,20 +28,8 @@ SUPABASE_DATABASE=postgres
 # Database backend (Render provides PostgreSQL automatically)
 MINDSDB_DB_CON=postgresql://user:password@host:port/database
 
-# Storage directory
+# Storage directory (Render persistent disk)
 MINDSDB_STORAGE_DIR=/opt/render/project/src/var
-
-# Docker environment
-MINDSDB_DOCKER_ENV=True
-
-# APIs to enable
-MINDSDB_APIS=http,mysql,postgres
-
-# Log level
-MINDSDB_LOG_LEVEL=INFO
-
-# Flask secret (auto-generated if not set)
-FLASK_SECRET_KEY=your_secret_key_here
 ```
 
 #### **🤖 Required - AI/ML APIs**
@@ -154,11 +142,51 @@ databases:
 
 ### **4. Post-Deployment Setup**
 
-After successful deployment, run the analytics models setup:
-
+#### **Step 1: Setup Analytics Models**
 ```bash
 # Via Render shell or add to startCommand
 python3 scripts/setup_models.py
+```
+
+#### **Step 2: Create a Chatbot**
+Connect to your MindsDB instance and create a chatbot:
+
+```sql
+-- First, create an agent for your analytics
+CREATE AGENT analytics_agent
+USING
+    model = 'google_ads_optimizer',
+    provider = 'mindsdb',
+    skills = ['analytics', 'google_ads', 'optimization'];
+
+-- Then create a chatbot (requires chat platform connection)
+CREATE CHATBOT analytics_chatbot
+USING
+    agent = 'analytics_agent',
+    database = 'your_chat_platform',  -- e.g., slack, teams
+    is_running = true;
+```
+
+#### **Step 3: Connect Chat Platform**
+To use MindsChat, you need to connect a chat platform:
+
+**For Slack:**
+```sql
+CREATE DATABASE slack_connection
+WITH ENGINE = 'slack',
+PARAMETERS = {
+    "token": "xoxb-your-slack-bot-token"
+};
+```
+
+**For Microsoft Teams:**
+```sql
+CREATE DATABASE teams_connection  
+WITH ENGINE = 'teams',
+PARAMETERS = {
+    "app_id": "your-teams-app-id",
+    "app_password": "your-teams-app-password"
+};
 ```
 
 ### **5. Render Resource Requirements**
@@ -179,12 +207,24 @@ python3 scripts/setup_models.py
 
 Render will automatically monitor: `https://your-app.onrender.com/api/util/ping`
 
-### **7. Access Your MindsDB**
+### **7. Access Your MindsDB & MindsChat**
 
 After deployment:
 - **HTTP API**: `https://your-app.onrender.com`
-- **MySQL**: Connect via Render's external connection
-- **PostgreSQL**: Connect via Render's external connection
+- **MindsChat Chatbots**: Available through connected chat platforms (Slack, Teams)
+- **Direct API Access**: Use HTTP API for programmatic access
+- **SQL Interface**: Connect via MySQL/PostgreSQL protocols
+
+#### **MindsChat Usage Examples:**
+Once your chatbot is running, users can interact via chat:
+
+```
+User: "What's the performance of our Google Ads campaigns this month?"
+Bot: "Based on your Google Ads data, here's the performance summary..."
+
+User: "Optimize our ad spend for better ROI"  
+Bot: "I recommend adjusting budgets based on these insights..."
+```
 
 ### **8. Troubleshooting**
 
