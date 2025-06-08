@@ -6,6 +6,16 @@ if [ -f .env.streamlined ]; then
     export $(cat .env.streamlined | grep -v '#' | xargs)
 fi
 
+# Load Docker environment variables if available
+if [ -f .env.docker ]; then
+    export $(cat .env.docker | grep -v '#' | xargs)
+fi
+
+# Load standard .env file if available
+if [ -f .env ]; then
+    export $(cat .env | grep -v '#' | xargs)
+fi
+
 # Set default environment variables if not provided
 export MINDSDB_STORAGE_DIR=${MINDSDB_STORAGE_DIR:-"./data"}
 export MINDSDB_CONFIG_PATH=${MINDSDB_CONFIG_PATH:-"./config.json"}
@@ -48,6 +58,24 @@ if [ ! -f ${MINDSDB_CONFIG_PATH} ]; then
   }
 }
 EOF
+fi
+
+# Validate credentials if credential system is available
+if [ -f "mindsdb/utilities/credentials.py" ]; then
+    echo "Validating credentials..."
+    python -c "
+from mindsdb.utilities.credentials import CredentialManager
+import sys
+try:
+    cm = CredentialManager()
+    credentials = cm.get_api_credentials()
+    print(f'✅ Found {len(credentials)} configured credentials')
+    for name in credentials:
+        print(f'  - {name}: ✓')
+except Exception as e:
+    print(f'⚠️  Credential validation failed: {e}')
+    print('Continuing with startup...')
+" 2>/dev/null || echo "⚠️  Credential validation skipped (dependencies not available)"
 fi
 
 # Display startup information
